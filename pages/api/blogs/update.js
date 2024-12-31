@@ -1,6 +1,5 @@
 import connectMongo from "../../../lib/mongodb";
 import Blog from "../../../models/Blog";
-
 export default async function handler(req, res) {
     // Ensure MongoDB connection.
     await connectMongo();
