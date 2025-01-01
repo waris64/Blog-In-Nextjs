@@ -10,7 +10,7 @@ export async function getStaticProps() {
   try {
     const res = await fetch('http://localhost:3000/api/blogs');
     const allPostsData = await res.json()
-    console.log('posts data fetched:' , allPostsData)
+    console.log('posts data fetched speaking from pages>index.js :' , allPostsData)
     return {
       props: {
         allPostsData, // Data from the API
