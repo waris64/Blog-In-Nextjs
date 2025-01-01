@@ -11,7 +11,7 @@ export default async function handler(req, res) {
 
             // Log details for debugging.
             console.log("Received ID for update:", id);
-            console.log("Update fields:", { title, content, author });
+            console.log(" fields for updating:", { title, content, author });
 
             // Validate ID.
             if (!id) {

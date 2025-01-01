@@ -17,7 +17,6 @@ export async function getStaticProps() {
       },
       revalidate: 60, // Revalidate every 60 seconds (you can adjust this as needed)
     };
-    console.log('sai ga rha ha ')
   } catch (error) {
     console.error("Error fetching blog posts:", error);
     return {
@@ -25,6 +24,8 @@ export async function getStaticProps() {
         allPostsData: [],
       },
     };
+    console.log('not fetching proper  location: pages>index.js');
+    
   }
 }
 export default function Home({ allPostsData }) {
@@ -47,7 +48,7 @@ export default function Home({ allPostsData }) {
           <ul className={utilStyles.list}>
             {allPostsData.map(({ _id, title, content, author, createdAt }) => (
               <li className={utilStyles.listItem} key={_id}>
-                <Link href={`/blog/${_id}`}>{title}</Link>
+                <Link href={`/blog/${_id}`} className='text-blue-400'>{title}</Link>
                 <br />
                 {createdAt && (
                   <small className={utilStyles.lightText}>
