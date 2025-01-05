@@ -1,25 +1,48 @@
-import connectMongo from "../../../lib/mongodb";
-import Blog from "../../../models/Blog";
+import { useRouter } from 'next/router';
+import Blog from '../../../models/Blog';
+import connectMongo from '../../../lib/mongodb';
 
-export default async function handler(req, res) {
-  if (req.method === "GET") {
-    try {
-      await connectMongo(); // Ensure MongoDB is connected
-      const { id } = req.query; // Extract `id` from query parameters
-      if (!id) {
-        return res.status(400).json({ message: "Blog ID is required" });
-      }
+// Fetch the blog data based on the `id` parameter
+export async function getServerSideProps({ params }) {
+  const { id } = params;
+  console.log("Received ID speaking from /api/blogs/id.js:", id); // Debugging log
 
-      const blog = await Blog.findById(id); // Fetch blog by ID
-      if (!blog) {
-        return res.status(404).json({ message: "Blog not found" });
-      }
+  try {
+    await connectMongo();
+    const blog = await Blog.findById(id).lean(); // Fetch the blog document by its ID
 
-      res.status(200).json(blog); // Return the blog data
-    } catch (error) {
-      res.status(500).json({ message: "Failed to fetch the blog", error: error.message });
+    if (!blog) {
+      console.log('Blog not found');
+      return { notFound: true }; // Return 404 if no blog is found
     }
-  } else {
-    res.status(405).json({ message: "Method not allowed" });
+
+    return {
+      props: {
+        blog: JSON.parse(JSON.stringify(blog)), // Serialize the blog object
+      },
+    };
+  } catch (error) {
+    console.error('Error fetching blog:', error);
+    return {
+      notFound: true // Return 404 on error
+    };
   }
+}
+
+export default function BlogDetails({ blog }) {
+  const router = useRouter();
+
+  if (!blog) {
+    return <p>Loading...</p>; // Loading state
+  }
+
+  return (
+    <div>
+      <h1>{blog.title}</h1>
+      <p>{blog.content}</p>
+      <small>Author: {blog.author}</small>
+      <br />
+      <button onClick={() => router.push('/')}>Back to Home</button>
+    </div>
+  );
 }

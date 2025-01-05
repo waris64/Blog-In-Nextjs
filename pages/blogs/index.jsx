@@ -1,22 +1,39 @@
-import Link from 'next/link';
+import connectMongo from "../../lib/mongodb";
+import Blog from "../../models/Blog";
 
-export default function Home({ allPostsData }) {
+export default async function AllBlogs({ blogs }) {
   return (
     <div>
-      <h1>Blog List</h1>
-      {allPostsData.length > 0 ? (
-        <ul>
-          {allPostsData.map(({ _id, title }) => (
-            <li key={_id}>
-              <Link href={`/blog/${_id}`}>
-                <a>{title}</a>
-              </Link>
-            </li>
-          ))}
-        </ul>
+      {blogs && blogs.length > 0 ? (
+        blogs.map((blog) => (
+          <div key={blog._id}>
+            <h1>{blog.title}</h1>
+            <p>{blog.content}</p>
+            <small>{blog.author}</small>
+          </div>
+        ))
       ) : (
-        <p>No blogs available.</p>
+        <p>Error in blogs rendering in pages/blogs/index </p>
       )}
     </div>
   );
+}
+
+export async function getServerSideProps() {
+  try {
+    await connectMongo();
+    const serialized = await Blog.find().lean();
+    return {
+      props: {
+        blogs: serialized || [],
+      },
+    };
+  } catch (error) {
+    console.log("Error fetching blogs : ", error);
+    return {
+      props: {
+        blogs: [],
+      },
+    };
+  }
 }

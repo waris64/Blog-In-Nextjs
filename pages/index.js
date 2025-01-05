@@ -1,67 +1,50 @@
-import Head from 'next/head';
-import Layout, { siteTitle } from '../components/layout';
-import utilStyles from '../styles/utils.module.css';
-import Link from 'next/link';
-import Date from '../components/date';
+import Link from "next/link";
+import connectMongo from "../lib/mongodb";
+import Blog from "../models/Blog";
 
-// Fetch blog posts dynamically from the API in `getStaticProps`.
-export async function getStaticProps() {
-
+export async function getServerSideProps() {
   try {
-    const res = await fetch('http://localhost:3000/api/blogs');
-    const allPostsData = await res.json()
-    console.log('posts data fetched speaking from pages>index.js :' , allPostsData)
+    // Connect to MongoDB
+    await connectMongo();
+
+    // Fetch all blogs and convert to plain JavaScript objects using .lean()
+    const blogs = await Blog.find({}).lean();
+
+    const serialize = JSON.parse(JSON.stringify(blogs))
+
+
     return {
       props: {
-        allPostsData, // Data from the API
+        blogsData: serialize,
       },
-      revalidate: 60, // Revalidate every 60 seconds (you can adjust this as needed)
     };
   } catch (error) {
-    console.error("Error fetching blog posts:", error);
+    console.log('Error fetching blogs: ', error);
     return {
       props: {
-        allPostsData: [],
+        blogsData: [], // Return an empty array on error
       },
     };
-    console.log('not fetching proper  location: pages>index.js');
-    
   }
 }
-export default function Home({ allPostsData }) {
 
+
+export default function AllBlogs({ blogsData }) {
   return (
-    <Layout >
-      <Head>
-        <title>{siteTitle}</title>
-      </Head>
-      <section className={utilStyles.headingMd}>
-        <p>
-          Hi, I am a passionate Software Engineer with expertise in frontend development using{' '}
-          <i>Javascript</i>, <i>React.js</i>, and <i>Next.js</i>. I strive to build user-friendly
-          applications and grow into a <b>Full Stack Developer</b>.
-        </p>
-      </section>
-      <section className={`${utilStyles.headingMd} ${utilStyles.padding1px}`}>
-        <h2 className={utilStyles.headingLg}>Blog</h2>
-        {allPostsData.length > 0 ? (
-          <ul className={utilStyles.list}>
-            {allPostsData.map(({ _id, title, content, author, createdAt }) => (
-              <li className={utilStyles.listItem} key={_id}>
-                <Link href={`/blog/${_id}`} className='text-blue-400'>{title}</Link>
-                <br />
-                {createdAt && (
-                  <small className={utilStyles.lightText}>
-                    <Date dateString={createdAt} />
-                  </small>
-                )}
-              </li>
-            ))}
-          </ul>
+    <div>
+      <h1>All Blogs</h1>
+      <ol className='list-none'>
+        {blogsData.length > 0 ? (
+          blogsData.map(({ _id, title }) => (
+            <li className="" key={_id}>
+              
+              <Link href={`blogs/${_id}`}><h2>{title}</h2></Link>
+            </li>
+          ))
         ) : (
-          <p>No blog posts available.</p>
+          <p>No blogs available</p>
         )}
-      </section>
-    </Layout>
+      </ol>
+    </div>
   );
 }
