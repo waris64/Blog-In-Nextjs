@@ -1,48 +1,28 @@
-import { useRouter } from 'next/router';
 import Blog from '../../../models/Blog';
 import connectMongo from '../../../lib/mongodb';
 
-// Fetch the blog data based on the `id` parameter
-export async function getServerSideProps({ params }) {
-  const { id } = params;
-  console.log("Received ID speaking from /api/blogs/id.js:", id); // Debugging log
+export default async function handler(req, res) {
+  await connectMongo();
 
-  try {
-    await connectMongo();
-    const blog = await Blog.findById(id).lean(); // Fetch the blog document by its ID
+  if (req.method === "DELETE") {
+    const { id } = req.query; // Use `req.query` for dynamic route parameters
 
-    if (!blog) {
-      console.log('Blog not found');
-      return { notFound: true }; // Return 404 if no blog is found
+    if (!id) {
+      return res.status(400).json({ error: "Blog ID is required" });
     }
 
-    return {
-      props: {
-        blog: JSON.parse(JSON.stringify(blog)), // Serialize the blog object
-      },
-    };
-  } catch (error) {
-    console.error('Error fetching blog:', error);
-    return {
-      notFound: true // Return 404 on error
-    };
+    try {
+      const deletedBlog = await Blog.findByIdAndDelete(id);
+      if (!deletedBlog) {
+        return res.status(404).json({ error: "Blog not found" });
+      }
+      res.status(200).json({ message: "Blog deleted successfully", blog: deletedBlog });
+    } catch (error) {
+      console.error("Error deleting blog:", error);
+      res.status(500).json({ error: "Server error" });
+    }
+  } else {
+    res.setHeader("Allow", ["DELETE"]);
+    res.status(405).end(`Method ${req.method} Not Allowed`);
   }
-}
-
-export default function BlogDetails({ blog }) {
-  const router = useRouter();
-
-  if (!blog) {
-    return <p>Loading...</p>; // Loading state
-  }
-
-  return (
-    <div>
-      <h1>{blog.title}</h1>
-      <p>{blog.content}</p>
-      <small>Author: {blog.author}</small>
-      <br />
-      <button onClick={() => router.push('/')}>Back to Home</button>
-    </div>
-  );
 }

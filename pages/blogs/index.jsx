@@ -1,7 +1,7 @@
 import connectMongo from "../../lib/mongodb";
 import Blog from "../../models/Blog";
 
-export default async function AllBlogs({ blogs }) {
+export default function AllBlogs({ blogs }) {
   return (
     <div>
       {blogs && blogs.length > 0 ? (
@@ -13,7 +13,7 @@ export default async function AllBlogs({ blogs }) {
           </div>
         ))
       ) : (
-        <p>Error in blogs rendering in pages/blogs/index </p>
+        <p>Error in blogs rendering in pages/blogs/index</p>
       )}
     </div>
   );
@@ -22,14 +22,15 @@ export default async function AllBlogs({ blogs }) {
 export async function getServerSideProps() {
   try {
     await connectMongo();
-    const serialized = await Blog.find().lean();
+    const blogs = await Blog.find().lean();
+    const serialize = JSON.parse(JSON.stringify(blogs));
     return {
       props: {
-        blogs: serialized || [],
+        blogs:  serialize || [],
       },
     };
   } catch (error) {
-    console.log("Error fetching blogs : ", error);
+    console.log("Error fetching blogs: ", error);
     return {
       props: {
         blogs: [],

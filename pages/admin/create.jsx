@@ -1,40 +1,59 @@
-import { useState } from "react";
-import Blog from "../../models/Blog";
-export default async function CreateBlog() {
-  const [formData, setformData] = useState({
+import { Router, useRouter } from "next/router";
+import { use, useState } from "react";
+
+export default function CreateBlog() {
+  const [formData, setFormData] = useState({
     title: "",
-    conent: "",
+    content: "", // Fixed typo from 'conent' to 'content'
     author: "",
   });
   const [loading, setLoading] = useState(false);
+
+  // Handle input change
   const handleChange = (e) => {
-    setLoading(true);
-    setformData(e.target.data);
-    setLoading(false);
-    console.log("data saved in setData");
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value, // Update the specific field
+    });
   };
-  const response = fetch("api/blogs/add", {
-    method: "post",
-    data: "applicaton/json",
-    body: JSON.stringify(formData),
-  });
-  const data = await response.json();
-  if (response.ok) {
-    console.log("Blog created successfuly");
-    setformData({ title: "", content: "", author: "" });
-  } else {
-    alert("BLog cretion error ", data.error);
-    console.log("Blog not created");
-  }
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Prevent default form submission
+    setLoading(true);
+
+    const response = await fetch("/api/blogs/add", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json", // Fixed typo in Content-Type
+      },
+      body: JSON.stringify(formData),
+    });
+
+    const data = await response.json();
+    if (data.ok) {
+      console.log("Blog created successfully, , here is the data : ");
+      setFormData({ title: "", content: "", author: "" }); // Reset form data
+      Router.push("/");
+    } else {
+      console.log("Blog creation error", data.error);
+    }
+
+    setLoading(false);
+  };
+  const router = useRouter();
+
   return (
     <div>
-      <h1>Blog post form</h1>
-      <form action="#" onSubmit={handleSubmit}>
+      <h1>Blog Post Form</h1>
+      <form onSubmit={handleSubmit}>
+        {" "}
+        {/* onSubmit should call handleSubmit */}
         <div>
           <span>Title: </span>
           <input
             type="text"
-            name=""
+            name="title" // Set the name correctly to match the state
             value={formData.title}
             onChange={handleChange}
             required
@@ -43,9 +62,9 @@ export default async function CreateBlog() {
         <div>
           <span>Content: </span>
           <textarea
-            name="content"
-            value={formData.conent}
-            placeholder="Enter blog data"
+            name="content" // Set the name correctly to match the state
+            value={formData.content} // Fixed typo here
+            placeholder="Enter blog content"
             onChange={handleChange}
             required
           ></textarea>
@@ -54,13 +73,20 @@ export default async function CreateBlog() {
           <span>Author: </span>
           <input
             type="text"
-            name="author-name"
+            name="author" // Set the name correctly to match the state
             value={formData.author}
-            placeholder="Enter author name "
+            placeholder="Enter author name"
             onChange={handleChange}
             required
           />
         </div>
+        <button
+          type="submit"
+          disabled={loading}
+          onClick={() => router.push("/")}
+        >
+          {loading ? "Creating..." : "Create Blog"}
+        </button>
       </form>
     </div>
   );
