@@ -54,7 +54,7 @@ export default function AdminDashboard() {
         <table className="table-auto w-full border-collapse border border-gray-200 items-center">
           <thead className="justify-center">
             <tr className="bg-gray-100">
-              <th className="border border-gray-300 px-4 py-2">Title</th>
+              <th className="border border-gray-300 px-4 py-2">Title </th>
               <th className="border border-gray-300 px-4 py-2">Content</th>
               <th className="border border-gray-300 px-4 py-2">Author</th>
               <th className="border border-gray-300 px-4 py-2">Actions</th>

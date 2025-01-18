@@ -1,62 +1,110 @@
 import { useState } from "react";
-export default async function handler() {
-    const {id} = req.query;
-console.log("id is : ", id);
+import { useRouter } from "next/router";
 
-    
+export default function UpdateBlog() {
+  const router = useRouter();
+  const { id } = router.query; // Get the blog ID from the query params
   const [formData, setFormData] = useState({
     title: "",
     content: "",
     author: "",
   });
   const [loading, setLoading] = useState(false);
+
+  // Handle input change
   const handleChange = (e) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.title]: e.target.value,
-      [e.target.content]: e.target.value,
-      [e.target.author]: e.target.value,
+      [name]: value,
     });
   };
+
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const updatedData = await fetch("/api/blogs/update", {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
 
-      body: await JSON.parse(JSON.stringify(formData)),
-    });
+    try {
+      const response = await fetch(`/api/blogs/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
-    const data = async () => await updatedData.json();
-    if (updatedData.ok) {
-      setFormData({ title: "", content: "", author: "" });
-      alert("Data updated successfully. ");
-    } else {
-      alert("Data updating error", data.error);
+      if (response.ok) {
+        alert("Data updated successfully!");
+        router.push("/admin"); // Redirect to the admin page or another page
+      } else {
+        const errorData = await response.json();
+        alert(`Error updating data: ${errorData.error}`);
+      }
+    } catch (error) {
+      console.error("Error updating blog:", error);
+      alert("An unexpected error occurred.");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
+
   return (
-    <div>
-      <form action="" onSubmit={handleSubmit}>
-        <>
-          <label>Title:</label>
-          <br />
-          <input type="text" value={(e) => setTitle(e.target.value)} />
-        </>
-        <>
-          <label>Content:</label>
-          <br />
-          <textarea type="text" value={(e) => setContent(e.target.value)} />
-        </>
-        <>
-          <label>Author:</label>
-          <br />
-          <input type="text" value={(e) => setAuthor(e.target.value)} />
-        </>
+    <div className="p-6 max-w-lg mx-auto bg-white shadow-md rounded-lg">
+      <h1 className="text-2xl font-bold mb-4 text-gray-800">Update Blog</h1>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label htmlFor="title" className="block text-gray-700 font-medium">
+            Title:
+          </label>
+          <input
+            type="text"
+            id="title"
+            name="title"
+            value={formData.title}
+            onChange={handleChange}
+            className="mt-1 w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-300"
+            placeholder="Enter the blog title"
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor="content" className="block text-gray-700 font-medium">
+            Content:
+          </label>
+          <textarea
+            id="content"
+            name="content"
+            value={formData.content}
+            onChange={handleChange}
+            rows="4"
+            className="mt-1 w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-300"
+            placeholder="Enter the blog content"
+            required
+          ></textarea>
+        </div>
+        <div>
+          <label htmlFor="author" className="block text-gray-700 font-medium">
+            Author:
+          </label>
+          <input
+            type="text"
+            id="author"
+            name="author"
+            value={formData.author}
+            onChange={handleChange}
+            className="mt-1 w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-300"
+            placeholder="Enter the author's name"
+            required
+          />
+        </div>
+        <button
+          type="submit"
+          className="w-full bg-blue-600 text-white py-2 rounded-md font-medium shadow hover:bg-blue-700 transition duration-300"
+          disabled={loading}
+        >
+          {loading ? "Updating..." : "Update Blog"}
+        </button>
       </form>
     </div>
   );

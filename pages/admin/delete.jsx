@@ -8,7 +8,7 @@ export default function DeleteBlog() {
 
   const handleDelete = async () => {
     if (!id) {
-      alert("Invalid blog ID.");
+      alert("Blog ID not found .");
       return;
     }
 
