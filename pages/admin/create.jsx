@@ -1,10 +1,10 @@
-import { Router, useRouter } from "next/router";
+import { Router, useRouter } from "next/router";  
 import { use, useState } from "react";
-
+import toast , {Toaster} from 'react-hot-toast';
 export default function CreateBlog() {
   const [formData, setFormData] = useState({
     title: "",
-    content: "", // Fixed typo from 'conent' to 'content'
+    content: "", 
     author: "",
   });
   const [loading, setLoading] = useState(false);
@@ -13,7 +13,8 @@ export default function CreateBlog() {
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value, // Update the specific field
+      // Update the specific field
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -25,14 +26,15 @@ export default function CreateBlog() {
     const response = await fetch("/api/blogs/add", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json", // Fixed typo in Content-Type
+        "Content-Type": "application/json", 
       },
       body: JSON.stringify(formData),
     });
-
+    
     const data = await response.json();
     if (data.ok) {
-      console.log("Blog created successfully, , here is the data : ");
+      console.log("Blog created successfully, , here is the data : ");  
+      toast.success("Blog created successfully");
       setFormData({ title: "", content: "", author: "" }); // Reset form data
       Router.push("/");
     } else {
@@ -42,7 +44,10 @@ export default function CreateBlog() {
     setLoading(false);
   };
   const router = useRouter();
-
+  const handleClick =()=>{
+    toast.success('Blog created successfully');
+    router.push('/')
+  }
   return (
     <div>
       <h1>Blog Post Form</h1>
@@ -83,10 +88,11 @@ export default function CreateBlog() {
         <button
           type="submit"
           disabled={loading}
-          onClick={() => router.push("/")}
+          onClick={handleClick}
         >
           {loading ? "Creating..." : "Create Blog"}
         </button>
+        <Toaster/>
       </form>
     </div>
   );

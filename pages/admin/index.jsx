@@ -6,12 +6,13 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
 
   // Fetch blogs on page load
+  
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
         const response = await fetch("/api/blogs");
         const data = await response.json();
-        setBlogs(data); // Assuming your API returns an array of blogs
+        setBlogs(data); 
       } catch (error) {
         console.error("Error fetching blogs:", error);
       } finally {
@@ -25,16 +26,18 @@ export default function AdminDashboard() {
   // Handle delete blog
   const handleDelete = async (id) => {
     try {
-      const response = await fetch(`/api/blogs/${id}`, {
-        method: "DELETE",
-      });
-
-      if (response.ok) {
-        // Remove the deleted blog from the state
-        setBlogs(blogs.filter(blog => blog._id !== id));
-      } else {
-        console.error("Error deleting blog");
+      if(confirm("Are you sure?")){
+        const response = await fetch(`/api/blogs/${id}`, {
+          method: "DELETE",
+        });
+        if (response.ok) {
+          // Remove the deleted blog from the state
+          setBlogs(blogs.filter(blog => blog._id !== id));
+        } else {
+          console.error("Error deleting blog");
+        }
       }
+
     } catch (error) {
       console.error("Error deleting blog:", error);
     }
@@ -77,7 +80,7 @@ export default function AdminDashboard() {
                     className="bg-red-500 text-white px-2 py-1 rounded"
                   >
                     Delete
-                  </button>
+                  </button> 
                 </td>
               </tr>
             ))}

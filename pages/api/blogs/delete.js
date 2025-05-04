@@ -6,6 +6,8 @@ export default async function handler(req, res) {
   await connectMongo();
 
   if (req.method === "DELETE") {
+    //confirm before deletion
+    
     const { id } = req.body; // Extract the ID of the blog to delete
     if (!id) {
       return res.status(400).json({ error: "Blog ID is required" });
