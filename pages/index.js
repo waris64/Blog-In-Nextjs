@@ -1,7 +1,7 @@
 import Link from "next/link";
 import connectMongo from "../lib/mongodb";
 import Blog from "../models/Blog";
-import Header from '../components/Header'
+import Header from '../components/Header';
 export async function getServerSideProps() {
   try {
     // Connect to MongoDB
@@ -29,9 +29,9 @@ export async function getServerSideProps() {
 
 export default function AllBlogs({ blogsData }) {
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center flex ">
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center ">
       <Header />
-      <div className="bg-white shadow-md rounded-lg p-6 max-w-3xl w-full">
+      {/* <div className="bg-white shadow-md rounded-lg p-6 max-w-3xl w-full">
         <h1 className="text-3xl font-bold text-gray-800 text-center mb-6">
           All Blogs
         </h1>
@@ -55,7 +55,7 @@ export default function AllBlogs({ blogsData }) {
             </p>
           )}
         </ol>
-      </div>
+      </div> */}
     </div>
   );
 }

@@ -48,7 +48,7 @@ export default function AdminDashboard() {
       <h1 className="md:text-2xl text-center py-4">Admin Dashboard</h1>
 
       <Link href="/admin/create">
-        <button className="py-2 px-4 bg-green-500 rounded  my-2 justify-end">Create New Blog</button>
+        <button className="py-2 px-4 bg-green-500 rounded  my-2 justify-end" >Create New Blog</button>
       </Link>
 
       {loading ? (

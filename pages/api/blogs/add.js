@@ -12,7 +12,7 @@ export default async function handler(req, res) {
       const { title, content, author } = req.body;
       if (!title || !content || !author) {
         console.log("Fill all the details ");
-        return res.status(400).json({ message: "Please fill all fields." });
+        return res.status(400).json({ error:error });
       }
 
       // Create a new blog entry.
@@ -21,7 +21,7 @@ export default async function handler(req, res) {
       console.log('Blog saved successfully ');
 
       // Respond with success.
-      return res.status(201).json({ message: "Blog added successfully", blog });
+      return res.status(201).json({ ok:true, message: "Blog added successfully", blog });
     } catch (error) {
       console.error("Error saving blog:", error);
       // Check for specific Mongoose errors (e.g., timeout, validation errors)
