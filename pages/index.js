@@ -30,7 +30,8 @@ export async function getServerSideProps() {
 export default function AllBlogs({ blogsData }) {
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center ">
-      <Header />
+      <Header image='https://www.w3schools.com/favicon.ico'/>
+
       {/* <div className="bg-white shadow-md rounded-lg p-6 max-w-3xl w-full">
         <h1 className="text-3xl font-bold text-gray-800 text-center mb-6">
           All Blogs

@@ -1,5 +1,5 @@
 import { Router, useRouter } from "next/router";
-import { use, useState } from "react";
+import { useState } from "react";
 import toast, { Toaster } from 'react-hot-toast';
 export default function CreateBlog() {
   const [formData, setFormData] = useState({
@@ -8,6 +8,7 @@ export default function CreateBlog() {
     author: "",
   });
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   // Handle input change
   const handleChange = (e) => {
@@ -17,50 +18,48 @@ export default function CreateBlog() {
       [e.target.name]: e.target.value,
     });
   };
-
+  
   // Handle form submission
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent default form submission
-
+    e.preventDefault();
     setLoading(true);
 
-    const response = await fetch("/api/blogs/add", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
-
-    const data = await response.json();
     const { title, content, author } = formData;
+    if (!title || !content || !author ) {
+      toast.error('Fill all  details');
+      setLoading(false);
+      return;
+    }
+
     try {
-      if (!title | !content | !author) {
-        toast.error('Fill all the details')
-      }
+      const response = await fetch("/api/blogs/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await response.json();
       if (data.ok) {
-        setFormData({ title: "", content: "", author: "" }); // Reset form data
+        setFormData({ title: "", content: "", author: ""}); // Reset form data
         toast.success("Blog created successfully");
         router.push("/");
       } else {
         console.log(data.message);
       }
-
-      setLoading(false);
-
     } catch (error) {
       console.error(error);
-
     }
-  }
-  const router = useRouter();
+    setLoading(false);
+  };
 
   return (
     <div className=" max-w-screen bg-white  ">
       <h1 className="text-2xl text-center py-3">Blog Post Form</h1>
-      <form className="border rounded px-8 py-4 m-auto w-1/2" onSubmit={handleSubmit}>
-        {" "}
-        {/* onSubmit should call handleSubmit */}
+      <form
+        className="border rounded px-8 py-4 m-auto w-1/2"
+        onSubmit={handleSubmit}
+      >
         <div>
           <span className="text-xl block">Title: </span>
           <input
@@ -97,11 +96,11 @@ export default function CreateBlog() {
             required
           />
         </div>
+
         <button
           type="submit"
           disabled={loading}
-          className=" py-2 px-4 border rounded mt-4 hover:bg-slate-100 cursor-pointer"
-          onClick={handleSubmit}
+          className="py-2 px-4 border rounded mt-4 hover:bg-slate-100 cursor-pointer"
         >
           {loading ? "Creating..." : "Create Blog"}
         </button>

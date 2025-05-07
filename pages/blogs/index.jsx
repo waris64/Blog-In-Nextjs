@@ -9,7 +9,7 @@ export default function AllBlogs({ blogs }) {
           <div key={blog._id}>
             <h1>{blog.title}</h1>
             <p>{blog.content}</p>
-            <small>{blog.author}</small>
+            <small>{blog.author}</small>  
           </div>
         ))
       ) : (

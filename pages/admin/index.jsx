@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
-
+import { Suspense } from "react";
 export default function AdminDashboard() {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -12,6 +12,7 @@ export default function AdminDashboard() {
       try {
         const response = await fetch("/api/blogs");
         const data = await response.json();
+        console.log("Heree is the : " , data);
         setBlogs(data); 
       } catch (error) {
         console.error("Error fetching blogs:", error);
@@ -44,11 +45,12 @@ export default function AdminDashboard() {
   };
 
   return (
+<Suspense fallback={<h1>Loading ... </h1>}>
     <section>
       <h1 className="md:text-2xl text-center py-4">Admin Dashboard</h1>
 
       <Link href="/admin/create">
-        <button className="py-2 px-4 bg-green-500 rounded  my-2 justify-end" >Create New Blog</button>
+        <button className="py-2 px-4 bg-green-500 rounded  my-2 justify-end cursor-pointer" >Create New Blog</button>
       </Link>
 
       {loading ? (
@@ -60,7 +62,6 @@ export default function AdminDashboard() {
               <th className="border border-gray-300 px-4 py-2">Title </th>
               <th className="border border-gray-300 px-4 py-2">Content</th>
               <th className="border border-gray-300 px-4 py-2">Author</th>
-              <th className="border border-gray-300 px-4 py-2">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -90,5 +91,6 @@ export default function AdminDashboard() {
         <p>No blogs available.</p>
       )}
     </section>
+    </Suspense>
   );
 }

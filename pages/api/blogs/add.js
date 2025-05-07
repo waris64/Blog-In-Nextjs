@@ -7,12 +7,12 @@ export default async function handler(req, res) {
       // Ensure MongoDB is connected.
       await connectMongo();
       console.log("Mongo connected while post request");
-
+      
       // Destructure and validate the request body.
       const { title, content, author } = req.body;
-      if (!title || !content || !author) {
+      if (!title || !content || !author ) {
         console.log("Fill all the details ");
-        return res.status(400).json({ error:error });
+        return res.status(400).json({ message:"Fill all the details"});
       }
 
       // Create a new blog entry.
