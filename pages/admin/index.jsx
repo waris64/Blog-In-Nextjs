@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Suspense } from "react";
+import { useRouter } from "next/router";
 export default function AdminDashboard() {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const router = useRouter()
   // Fetch blogs on page load
   
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const response = await fetch("/api/blogs");
+        const response = await fetch(`/api/blogs`);
         const data = await response.json();
-        console.log("Heree is the : " , data);
+        console.log("Heree is the data : " , data);
         setBlogs(data); 
       } catch (error) {
         console.error("Error fetching blogs:", error);
@@ -25,24 +26,24 @@ export default function AdminDashboard() {
   }, []);
 
   // Handle delete blog
-  const handleDelete = async (id) => {
-    try {
-      if(confirm("Are you sure?")){
-        const response = await fetch(`/api/blogs/${id}`, {
-          method: "DELETE",
-        });
-        if (response.ok) {
-          // Remove the deleted blog from the state
-          setBlogs(blogs.filter(blog => blog._id !== id));
-        } else {
-          console.error("Error deleting blog");
-        }
-      }
+//   const handleDelete = async (id) => {
+//     try {
+//       if(confirm("Are you sure?")){
+//         const response = await fetch(`/api/blogs/${id}`, {
+//           method: "DELETE",
+//         });
+//         if (response.ok) {
+// // Remove the deleted blog from the state
+//           setBlogs(blogs.filter(blog => blog._id !== id));
+//         } else {
+//           console.error("Error deleting blog");
+//         }
+//       }
 
-    } catch (error) {
-      console.error("Error deleting blog:", error);
-    }
-  };
+//     } catch (error) {
+//       console.error("Error deleting blog:", error);
+//     }
+//   };
 
   return (
 <Suspense fallback={<h1>Loading ... </h1>}>
@@ -62,6 +63,7 @@ export default function AdminDashboard() {
               <th className="border border-gray-300 px-4 py-2">Title </th>
               <th className="border border-gray-300 px-4 py-2">Content</th>
               <th className="border border-gray-300 px-4 py-2">Author</th>
+              <th className="border border-gray-300 px-4 py-2">Image</th>
             </tr>
           </thead>
           <tbody>
@@ -70,6 +72,7 @@ export default function AdminDashboard() {
                 <td className="border border-gray-300 px-4 py-2">{blog.title}</td>
                 <td className="border border-gray-300 px-4 py-2">{blog.content.substring(0, 50)}...</td>
                 <td className="border border-gray-300 px-4 py-2">{blog.author}</td>
+                <td className="border border-gray-300 px-4 py-2">{blog.file}</td>
                 <td className="border border-gray-300 px-4 py-2">
                   <Link href={`/admin/edit?id=${blog._id}`}>
                     <button className="bg-blue-500 text-white px-2 py-1 rounded mr-2">
@@ -77,7 +80,7 @@ export default function AdminDashboard() {
                     </button>
                   </Link>
                   <button
-                    onClick={() => handleDelete(blog._id)}  // Delete blog on click
+                    onClick={()=>router.push('/admin/delete')}  
                     className="bg-red-500 text-white px-2 py-1 rounded"
                   >
                     Delete

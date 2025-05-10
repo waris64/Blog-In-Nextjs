@@ -1,43 +1,28 @@
-// pages/admin/DeleteBlog.js
-
 import { useRouter } from "next/router";
-
-export default function DeleteBlog() {
+import { useState } from "react";
+export const handleDelete=async (id)=>{
   const router = useRouter();
-  const { id } = router.query;
-
-  const handleDelete = async () => {
-    if (!id) {
-      alert("Blog ID not found .");
-      return;
-    }
-
-    try {
-      const response = await fetch(`/api/blogs/${id}`, {
-        method: "DELETE",
+  const [blogs,setBlogs] = useState();
+  const fetchBlogs = await fetch('/api/blogs');
+  setBlogs(fetchBlogs);
+  try {
+    if(confirm("You are deleting ? ")){
+      const response = await fetch(`/api/delete/${id}`,{
+        method:'DELETE',
       });
-
-      const data = await response.json();
-      
-      if (data.ok) {
-        alert("Blog deleted successfully!");
-        router.push("/admin"); // Redirect to admin dashboard
-      } else {
-        alert(`Failed to delete blog: ${data.error || "Unknown error"}`);
+      if(response.ok){
+       const deltedBlog = blogs.filter((blog)=>blog._id !== id);
+        console.log(`blog with id : ${deltedBlog} deleted .`);
+      }else{
+        console.error('blog deletion error ')
       }
-    } catch (error) {
-      console.error("Error deleting blog:", error);
-      alert("An error occurred while deleting the blog.");
+    }else{
+      return false;
     }
-  };
-
-  return (
-    <div>
-       <h1>{blog.title}</h1>
-      <p>{blog.content}</p>
-      <small>Author: {blog.author}</small>
-      <br />
-      <button onClick={handleDelete}>Delete Blog</button>
-    </div>
-  );
+  } catch (error) {
+    console.error(error);
+  }
 }
+
+
+export default handleDelete;
