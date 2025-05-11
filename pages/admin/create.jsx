@@ -6,11 +6,11 @@ export default function CreateBlog() {
     title: "",
     content: "",
     author: "",
-    file:""
+    file: ""
   });
   const [loading, setLoading] = useState(false);
   const router = useRouter();
- 
+
   // Handle input change
   const handleChange = (e) => {
     setFormData({
@@ -24,7 +24,7 @@ export default function CreateBlog() {
   const handleFileChange = (e) => {
     setFormData({
       ...formData,
-       file:`./public/uploads/${files.file.newFilename}`
+      file: e.target.files[0],
     })
   }
   // Handle form submission
@@ -32,7 +32,7 @@ export default function CreateBlog() {
     e.preventDefault();
     setLoading(true);
 
-    const { title, content, author,file } = formData;
+    const { title, content, author, file } = formData;
     console.log("Here is the data in frontend : ", formData)
     if (!title || !content || !author || !file) {
       toast.error('Fill all  details');
@@ -42,17 +42,17 @@ export default function CreateBlog() {
 
     try {
       const data = new FormData();
-      data.append("title",title);
-      data.append('content',content);
-      data.append('file',file);
-      data.append('author',author);
+      data.append("title", title);
+      data.append('content', content);
+      data.append('author', author);
+      data.append('file', file);
 
       const response = await fetch("/api/blogs/add", {
         method: "POST",
-        body:data,
+        body: data,
       });
       const res = await response.json();
-      if (res.success) {  
+      if (res.success) {
         toast.success("Blog created successfully");
         router.push("/");
       } else {
@@ -64,7 +64,7 @@ export default function CreateBlog() {
     }
     setLoading(false);
   };
- 
+
   return (
     <div className=" w-screen  h-screen bg-slate-400 px-4  ">
       <h1 className="text-2xl text-center py-3">Blog Post Form</h1>
@@ -110,7 +110,7 @@ export default function CreateBlog() {
         </div>
         <div>
           <span className="text-lg ">Choose Picture : </span> <br />
-          <input type="file" name="file" id="" onChange={handleFileChange} className="px-4 py-2 border mt-2 w-52"/>
+          <input type="file" name="file" id="" onChange={handleFileChange} className="px-4 py-2 border mt-2 w-52" />
         </div>
         <button
           type="submit"

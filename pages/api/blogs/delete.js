@@ -6,15 +6,16 @@ export default async function handler(req, res) {
   await connectMongo();
 
   if (req.method === "DELETE") {
-    //confirm before deletion
-    
-    const { id } = req.body; // Extract the ID of the blog to delete
+
+    // first get the id for deletion
+    const { id } = req.query;
+    console.log("Targeted ID: ", id )
     if (!id) {
       return res.status(400).json({ error: "Blog ID is required" });
     }
 
     // Verify JWT token
-    const token = req.headers.authorization?.split(" ")[1];
+/*  const token = req.headers.authorization?.split(" ")[1];
     if (!token) {
       return res.status(401).json({ error: "Authentication required" });
     }
@@ -27,12 +28,12 @@ export default async function handler(req, res) {
     } catch (error) {
       return res.status(401).json({ error: "Invalid or expired token" });
     }
-
+*/
     // Delete the blog
     try {
       const deletedBlog = await Blog.findByIdAndDelete(id);
       if (deletedBlog) {
-        return res.status(200).json({ message: "Blog deleted successfully" });
+        return res.status(200).json({ message: "Blog deleted successfully from db" });
       } else {
         return res.status(404).json({ error: "Blog not found" });
       }

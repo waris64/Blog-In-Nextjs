@@ -43,7 +43,7 @@ export default async function handler(req, res) {
       const title = fields.title?.[0] || fields.title;
       const content = fields.content?.[0] || fields.content;
       const author = fields.author?.[0] || fields.author;
-      const imageFile = files.file;
+      const imageFile = files.file[0];
 
       if (!title || !content || !author || !imageFile) {
         return res.status(400).json({ message: 'All fields are required' });

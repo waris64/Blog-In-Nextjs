@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Suspense } from "react";
 import { useRouter } from "next/router";
+import { deleteBlog } from "./delete";
 export default function AdminDashboard() {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -25,26 +26,13 @@ export default function AdminDashboard() {
     fetchBlogs();
   }, []);
 
-  // Handle delete blog
-//   const handleDelete = async (id) => {
-//     try {
-//       if(confirm("Are you sure?")){
-//         const response = await fetch(`/api/blogs/${id}`, {
-//           method: "DELETE",
-//         });
-//         if (response.ok) {
-// // Remove the deleted blog from the state
-//           setBlogs(blogs.filter(blog => blog._id !== id));
-//         } else {
-//           console.error("Error deleting blog");
-//         }
-//       }
-
-//     } catch (error) {
-//       console.error("Error deleting blog:", error);
-//     }
-//   };
-
+const handleDelete=async (id)=>{
+  const success = await deleteBlog(id);
+  if(success){
+    console.log("Here is the id : ", id)
+   setBlogs(blogs.filter((blog)=>blog._id !== id)); 
+  }
+} 
   return (
 <Suspense fallback={<h1>Loading ... </h1>}>
     <section>
@@ -80,12 +68,12 @@ export default function AdminDashboard() {
                     </button>
                   </Link>
                   <button
-                    onClick={()=>router.push('/admin/delete')}  
+                    onClick={()=>handleDelete(blog._id)}  
                     className="bg-red-500 text-white px-2 py-1 rounded"
                   >
                     Delete
                   </button> 
-                </td>
+                </td> 
               </tr>
             ))}
           </tbody>
