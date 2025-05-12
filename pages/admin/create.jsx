@@ -1,4 +1,4 @@
-import { Router, useRouter } from "next/router";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import toast, { Toaster } from 'react-hot-toast';
 export default function CreateBlog() {
@@ -29,11 +29,12 @@ export default function CreateBlog() {
   }
   // Handle form submission
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); 
     setLoading(true);
 
     const { title, content, author, file } = formData;
     console.log("Here is the data in frontend : ", formData)
+    console.log("File Data : ", formData)
     if (!title || !content || !author || !file) {
       toast.error('Fill all  details');
       setLoading(false);
@@ -54,23 +55,29 @@ export default function CreateBlog() {
       const res = await response.json();
       if (res.success) {
         toast.success("Blog created successfully");
-        router.push("/");
+        setTimeout(()=>{
+          router.push("/"); 
+        },1000)
       } else {
-        console.log(data.message);
-        toast.error(error)
+        console.error( res );
       }
     } catch (error) {
+      toast.error(error.message || "Something went wrong")
       console.error(error);
     }
     setLoading(false);
   };
 
   return (
-    <div className=" w-screen  h-screen bg-slate-400 px-4  ">
+    <div className="  w-screen  h-screen bg-slate-400 px-4  ">
+        <Toaster />
       <h1 className="text-2xl text-center py-3">Blog Post Form</h1>
       <form
         className="border  px-8 py-10 m-auto w-1/2 bg-white shadow-lg rounded-2xl"
         onSubmit={handleSubmit}
+        encType="mulipart/form-data"
+        action='api/blogs/upload'
+        method="POST"
       >
         <div>
           <span className="text-xl block">Title: </span>
@@ -119,7 +126,6 @@ export default function CreateBlog() {
         >
           {loading ? "Creating..." : "Create Blog"}
         </button>
-        <Toaster />
       </form>
     </div>
   );

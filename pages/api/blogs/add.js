@@ -43,7 +43,7 @@ export default async function handler(req, res) {
       const title = fields.title?.[0] || fields.title;
       const content = fields.content?.[0] || fields.content;
       const author = fields.author?.[0] || fields.author;
-      const imageFile = files.file[0];
+      const imageFile = fields.file?.[0] || files.file[0];
 
       if (!title || !content || !author || !imageFile) {
         return res.status(400).json({ message: 'All fields are required' });
@@ -54,13 +54,13 @@ export default async function handler(req, res) {
           title,
           content,
           author,
-          image: imageFile.newFilename,
+          file: imageFile.newFilename,
         });
 
         await blog.save();
         return res.status(200).json({ message: 'Blog saved successfully' });
-      } catch (saveErr) {
-        console.error('DB save error:', saveErr);
+      } catch (error) {
+        console.error('DB save error:', error);
         return res.status(500).json({ message: 'Failed to save blog to database' });
       }
     });

@@ -18,7 +18,7 @@ export async function getServerSideProps() {
       },
     };
   } catch (error) {
-    console.log("Error fetching blogs: ", error);
+    console.log("Error fetching blogs : ", error);
     return {
       props: {
         blogsData: [], // Return an empty array on error
@@ -32,7 +32,7 @@ export default function AllBlogs({ blogsData }) {
     <div className="min-h-screen bg-gray-100 flex items-center justify-center ">
       <Header image='https://www.w3schools.com/favicon.ico'/>
 
-      {/* <div className="bg-white shadow-md rounded-lg p-6 max-w-3xl w-full">
+      <div className="bg-white shadow-md rounded-lg p-6 max-w-3xl w-full">
         <h1 className="text-3xl font-bold text-gray-800 text-center mb-6">
           All Blogs
         </h1>
@@ -43,10 +43,8 @@ export default function AllBlogs({ blogsData }) {
                 key={_id}
                 className="border-b pb-4 last:border-none hover:bg-gray-50 transition-all text-lg font-medium text-blue-600 hover:underline"
               >
-                <Link href={`blogs/${_id}`}>
-
+                <Link href={`blogs/${_id}`} className="decoration-none">
                   {title}
-
                 </Link>
               </li>
             ))
@@ -56,7 +54,7 @@ export default function AllBlogs({ blogsData }) {
             </p>
           )}
         </ol>
-      </div> */}
+      </div>
     </div>
   );
 }
