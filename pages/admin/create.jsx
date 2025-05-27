@@ -41,7 +41,7 @@ export default function CreateBlog() {
       return;
     }
 
-    try {
+    try { 
       const data = new FormData();
       data.append("title", title);
       data.append('content', content);

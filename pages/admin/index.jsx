@@ -29,8 +29,9 @@ export default function AdminDashboard() {
   const handleDelete = async (id) => {
     try {
       const success = await deleteBlog(id);
+      console.log("delete hitting from index.jsx :  ", success)
       if (success) {
-        setBlogs((prevBlogs)=>prevBlogs.filter((blog)=>blog._id!==id));
+        setBlogs((prevBlogs) => prevBlogs.filter((blog) => blog._id !== id));
       }
     }
     catch (error) {
@@ -65,7 +66,8 @@ export default function AdminDashboard() {
                   <td className="border border-gray-300 px-4 py-2"><Link href={`/blogs/${blog._id}`}>{blog.title}</Link></td>
                   <td className="border border-gray-300 px-4 py-2"><Link href={`/blogs/${blog._id}`}>{blog.content.substring(0, 50)}</Link></td>
                   <td className="border border-gray-300 px-4 py-2"><Link href={`/blogs/${blog._id}`}>{blog.author}</Link></td>
-                  <td className="border border-gray-300 px-4 py-2">{blog.file}</td>
+                  <td className="border border-gray-300 px-4 py-2"><img src={`/uploads/${blog.file}`} className="h-10 w-10 " alt="blog image" /></td>
+
                   <td className="border border-gray-300 px-4 py-2">
                     <Link href={`/admin/edit?id=${blog._id}`}>
                       <button className="bg-blue-500 text-white px-2 py-1 rounded mr-2">

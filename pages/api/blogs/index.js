@@ -4,19 +4,9 @@ import Blog from "../../../models/Blog";
 export default async function GET(req, res) {
   try {
     // Establish a connection to MongoDB
-    const mongo = await connectMongo();
-    if(mongo) {
-
-      console.log('Mongo not connected')
-    }else
-    {
-      console.log('Mongo not connected')
-    }
-
+    await connectMongo();
     // Fetch blogs with lean() to ensure they are plain JavaScript objects
     const blogs = await Blog.find().lean();
-
-
     // Return the blogs data as JSON
     res.status(200).json(blogs);
   } catch (error) {

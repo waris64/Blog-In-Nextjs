@@ -3,7 +3,6 @@ import connectMongo from '../../../lib/mongodb';
 
 export default async function handler(req, res) {
   await connectMongo();
-
   if (req.method === "DELETE") {
     const { id } = req.query; // Use `req.query` for dynamic route parameters
 
@@ -23,19 +22,15 @@ export default async function handler(req, res) {
     }
   } else if (req.method === "PATCH") {
     const { id } = req.query; // Extract blog ID from query.
-
     if (!id) {
       return res.status(400).json({ error: "Blog ID is required" });
     }
-
-    const { title, content, author } = req.body; // Extract fields for update
-
+    const { title, content, author,file } = req.body; // Extract fields for update
     // Construct the update data object
     const updateData = {};
     if (title) updateData.title = title;
     if (content) updateData.content = content;
     if (author) updateData.author = author;
-
     if (Object.keys(updateData).length === 0) {
       return res.status(400).json({ error: "At least one field (title, content, author) is required to update" });
     }

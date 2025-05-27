@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 export default async function handler(req, res) {
   try {
     await connectMongo();
+    console.log("Mongo connected while hittng del request ")
   } catch (error) {
     console.error(error)
     return res.status(500).json({error:"Error while connecting mongodb"})
@@ -14,7 +15,7 @@ export default async function handler(req, res) {
 
     // first get the id for deletion
     const { id } = req.query;
-    console.log("Targeted ID: ", id )
+    console.log("Targeted ID for deletion : ", id )
     if (!id) {
       return res.status(400).json({ error: "Blog ID is required" });
     }
@@ -35,7 +36,7 @@ export default async function handler(req, res) {
     }
 */
     // Delete the blog
-    try {
+    try {console.log("hitting delete");
       const deletedBlog = await Blog.findByIdAndDelete(id);
       if (deletedBlog) {
         return res.status(200).json({ message: "Blog deleted successfully from db" });

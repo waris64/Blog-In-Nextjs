@@ -12,11 +12,13 @@ export const config = {
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
+    cosole.log("Method request is not post ")
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
   try {
     await connectMonog();
+    
     const uploadDir = path.join(process.cwd(), 'public/uploads');
 
     if (!fs.existsSync(uploadDir)) {
