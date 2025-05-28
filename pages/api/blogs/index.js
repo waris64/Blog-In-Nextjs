@@ -7,9 +7,14 @@ export default async function handler(req, res) {
       // Establish a connection to MongoDB
       await connectMongo();
       // Fetch blogs with lean() to ensure they are plain JavaScript objects
-      const blogs = await Blog.find().lean();
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 6;
+      const skip = (page - 1) *  limit;
+
+      const blogs = await Blog.find().skip(skip).limit(limit);
+      const totalBlogs = await Blog.countDocuments();
       // Return the blogs data as JSON
-      res.status(200).json(blogs);
+      res.status(200).json({blogs,totalBlogs})
     }  catch (error) {
     console.error('Blogs data fetching error through API:', error);
 
