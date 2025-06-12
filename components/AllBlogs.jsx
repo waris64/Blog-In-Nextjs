@@ -1,6 +1,8 @@
 import {useState,useEffect} from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { IoArrowForward } from "react-icons/io5";
+import { IoMdArrowRoundBack } from "react-icons/io";
 export default function AllblogsData({ blogsData }) {
   const [blogs,setBlogs] = useState([]);
   const [currentPage,setCurrentPage] = useState(1);
@@ -12,8 +14,7 @@ export default function AllblogsData({ blogsData }) {
       const res = await fetch(`/api/blogs?page=${currentPage}&limit=${limit}`);
       const data = await res.json();
       setBlogs(data.blogs);
-      console.log("Setted blogs : ", data.blogs);
-      console.log("Total Blogs : ",data.Blogs);
+      console.log("Settled blogs : ", data.blogs);
       setTotalPages(Math.ceil(data.totalBlogs / limit ));
 }
 fetchBlogs();
@@ -37,7 +38,7 @@ const handlePreviousPage =()=>{
           All Blogs
         </h1>
 
-        {Array.isArray(blogs) && blogs.length > 0 ? (
+        { blogs && blogs.length > 0 ? (
           <ul className="space-y-4">
             {blogs.map(({ _id, title,content, file }) => (
               <li
@@ -64,16 +65,16 @@ const handlePreviousPage =()=>{
           </ul>
         ) : (
           <p className="text-center text-gray-500 text-lg">No blogsData available</p>
-        )};
+        )}
 
         {/* Pagination controls */}
         <div>
           <button 
           onClick={handlePreviousPage}
           disabled={currentPage===1}
-          className='px-4 py-2 bg-blue-500'
+          className='px-4 py-2 cursor-pointer '
           >
-            Previous Page
+            <IoMdArrowRoundBack />
           </button>
 
           <span>
@@ -83,9 +84,9 @@ const handlePreviousPage =()=>{
           <button                           
           onClick={handleNextPage}
           disabled={currentPage === totalPages}
-          className='px-4 py-2 bg-blue-500'
+          className='px-4 py-2 cursor-pointer'
           >
-            Next Page
+            <IoArrowForward />
           </button>
         </div>
       </div>

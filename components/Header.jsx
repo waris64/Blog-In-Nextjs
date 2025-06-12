@@ -1,7 +1,7 @@
 import React from 'react';
 const Header = (props) => {
     return (
-          <div className='flex justify-around w-full items-center py-2  border sticky m-auto'>
+          <div className='flex justify-around w-full items-center py-2  border  m-auto'>
             <div className='bg-red-50 '>
                <img src={props.image} alt="w3school" />
             </div>
