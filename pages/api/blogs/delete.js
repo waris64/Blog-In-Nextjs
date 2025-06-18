@@ -36,7 +36,8 @@ export default async function handler(req, res) {
     }
 */
     // Delete the blog
-    try {console.log("hitting delete");
+    try {
+      console.log("hitting delete");
       const deletedBlog = await Blog.findByIdAndDelete(id);
       if (deletedBlog) {
         return res.status(200).json({ message: "Blog deleted successfully from db" });

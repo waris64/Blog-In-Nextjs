@@ -52,8 +52,9 @@ export default function CreateBlog() {
         method: "POST",
         body: data,
       });
-      const res = await response.json();
-      if (res.success) {
+      // const res = await response.json();
+
+      if (response.success) {
         toast.success("Blog created successfully");
         setTimeout(()=>{
           router.push("/"); 

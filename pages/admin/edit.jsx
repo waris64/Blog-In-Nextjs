@@ -3,11 +3,12 @@ import { useRouter } from "next/router";
 
 export default function UpdateBlog() {
   const router = useRouter();
-  const { id } = router.query; // Get the blog ID from the query params
+  const { id } = router.query; 
   const [formData, setFormData] = useState({
     title: "",
     content: "",
     author: "",
+    file:""
   });
   const [loading, setLoading] = useState(false);
 
@@ -19,7 +20,13 @@ export default function UpdateBlog() {
       [name]: value,
     });
   };
-
+//Handle file change
+const handleFileChange=(e)=>{
+  setFormData({
+    ...formData,
+    files:e.target.files[0]
+  })
+}
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,7 +40,8 @@ export default function UpdateBlog() {
         },
         body: JSON.stringify(formData),
       });
-
+     // setting the fetched blog title in the title field
+     
       if (response.ok) {
         alert("Data updated successfully!");
         router.push("/admin"); // Redirect to the admin page or another page
@@ -83,6 +91,7 @@ export default function UpdateBlog() {
             required
           ></textarea>
         </div>
+        <input className="border px-2 py-2" type='file' onChange={handleFileChange}/>
         <div>
           <label htmlFor="author" className="block text-gray-700 font-medium">
             Author:
